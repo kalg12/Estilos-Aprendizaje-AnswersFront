@@ -7,6 +7,7 @@ import {
   TableRow,
   TableCell,
   Button,
+  Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { getAlumnoByCurp } from "../../src/services/api";
@@ -188,7 +189,11 @@ const AlumnoDetallesPage = () => {
             </Link>
           </Button>
         </div>
-        {alumno && (
+        {!alumno ? (
+          <div className="flex items-center justify-center h-full">
+            <Spinner label="Cargando" color="primary" labelColor="primary" />
+          </div>
+        ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-2xl font-semibold mb-4 text-center">
