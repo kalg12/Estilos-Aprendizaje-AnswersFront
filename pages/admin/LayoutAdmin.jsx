@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import {
   Navbar,
@@ -8,9 +7,11 @@ import {
   Button,
 } from "@nextui-org/react";
 import Link from "next/link";
+import "tailwindcss/tailwind.css";
 
-export default function Home() {
-  const currentYear = new Date().getFullYear(); // Obtiene el año actual
+const LayoutAdmin = ({ children }) => {
+  // Aquí definirías la lógica para obtener el año actual
+  const currentYear = new Date().getFullYear();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -22,22 +23,18 @@ export default function Home() {
           <NavbarContent justify="end">
             <NavbarItem>
               <Button as={Link} color="warning" href="#" variant="flat">
-                Iniciar Sesión
+                Cerrar Sesión
               </Button>
             </NavbarItem>
           </NavbarContent>
         </Navbar>
       </navbar>
-      <main
-        className="flex-1 bg-cover bg-center"
-        style={{
-          backgroundImage:
-            "url('http://fulltech.com.mx/dist/banner-cetmar18.jpg')",
-        }}
-      ></main>
+      <main className="flex-1 p-2">{children}</main>
       <footer className="bg-gray-800 text-slate-100 text-center text-xs p-3">
         <p>© {currentYear} - Resultados - Estilos de Aprendizaje - CETMAR18</p>
       </footer>
     </div>
   );
-}
+};
+
+export default LayoutAdmin;
