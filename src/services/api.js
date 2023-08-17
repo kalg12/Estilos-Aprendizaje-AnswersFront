@@ -1,7 +1,7 @@
 require("dotenv").config();
 import axios from "axios";
 
-const API_BASE_URL = "http://192.168.0.150:5000/api";
+const API_BASE_URL = "https://estilos-aprendijzae-backend-p58u-dev.fl0.io/api";
 
 // Función para obtener todos los alumnos
 export const getAllAlumnos = async () => {
