@@ -12,6 +12,7 @@ import {
 import { getAllAlumnos } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
 import Link from "next/link";
+const ExcelJS = require("exceljs");
 
 const AllPage = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -55,6 +56,53 @@ const AllPage = () => {
     ).length;
   };
 
+  const downloadExcel = async () => {
+    const workbook = new ExcelJS.Workbook();
+    const worksheet = workbook.addWorksheet("Alumnos");
+
+    worksheet.getColumn("A").width = 25; // Ancho para ID
+    worksheet.getColumn("B").width = 35; // Ancho para Nombre
+
+    // Encabezados
+    const headers = ["ID", "Nombres", "Grupo"];
+    for (let i = 1; i <= 40; i++) {
+      headers.push(i.toString());
+    }
+    worksheet.addRow(headers);
+
+    // Datos de los alumnos
+    alumnos.forEach((alumno) => {
+      const rowData = [
+        alumno.curp,
+        `${alumno.nombre} ${alumno.apellido}`,
+        alumno.grupo,
+      ];
+      for (let i = 1; i <= 40; i++) {
+        rowData.push(alumno[`element${i}`]);
+      }
+      worksheet.addRow(rowData);
+    });
+
+    // Configurar el estilo de las celdas (opcional)
+    worksheet.eachRow((row) => {
+      row.eachCell((cell) => {
+        cell.alignment = { vertical: "middle", horizontal: "center" };
+      });
+    });
+
+    // Descargar el archivo
+    const buffer = await workbook.xlsx.writeBuffer();
+    const blob = new Blob([buffer], {
+      type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+    });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "respuestasFormulario.xlsx";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <LayoutAdmin>
       <div className="flex flex-col items-center justify-center h-full">
@@ -86,6 +134,11 @@ const AllPage = () => {
             </p>
             <p className="text-lg">{countDominioDosEstilos()}</p>
           </div>
+        </div>
+        <div className="mt-4">
+          <Button color="success" onClick={downloadExcel}>
+            Descargar Excel
+          </Button>
         </div>
       </div>
 
