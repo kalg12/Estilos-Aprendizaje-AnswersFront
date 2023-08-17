@@ -6,10 +6,12 @@ import {
   TableBody,
   TableRow,
   TableCell,
+  Button,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import { getAlumnoByCurp } from "../../src/services/api"; // Asegúrate de importar la función correcta para obtener el alumno por CURP
 import LayoutAdmin from "./LayoutAdmin";
+import Link from "next/link";
 
 const AlumnoDetallesPage = () => {
   const router = useRouter();
@@ -32,8 +34,11 @@ const AlumnoDetallesPage = () => {
 
   const renderRespuestas = () => {
     const patronesRespuestas = [
+      /* 1 */
       ["B", "A", "C"],
+      /* 2 */
       ["A", "C", "B"],
+      /* 3 */
       ["B", "A", "C"],
       ["C", "B", "A"],
       ["C", "B", "A"],
@@ -42,6 +47,7 @@ const AlumnoDetallesPage = () => {
       ["B", "A", "C"],
       ["A", "C", "B"],
       ["C", "B", "A"],
+
       ["B", "A", "C"],
       ["B", "C", "A"],
       ["C", "A", "B"],
@@ -52,6 +58,7 @@ const AlumnoDetallesPage = () => {
       ["C", "A", "B"],
       ["A", "B", "C"],
       ["A", "C", "B"],
+
       ["B", "C", "A"],
       ["C", "A", "B"],
       ["A", "B", "C"],
@@ -61,15 +68,27 @@ const AlumnoDetallesPage = () => {
       ["B", "A", "C"],
       ["C", "B", "A"],
       ["B", "C", "A"],
-      ["C", "A", "B"],
-      ["A", "C", "B"],
+      ["C", "B", "A"],
+
+      /* 31 */
       ["B", "A", "C"],
+      /* 32 */
       ["C", "A", "B"],
-      ["A", "B", "C"],
-      ["B", "C", "A"],
+      /* 33 */
       ["A", "C", "B"],
+      /* 34 */
+      ["B", "A", "C"],
+      /* 35 */
       ["B", "C", "A"],
+      /* 36 */
+      ["A", "C", "B"],
+      /* 37 */
+      ["A", "B", "C"],
+      /* 38 */
       ["B", "C", "A"],
+      /* 39 */
+      ["B", "C", "A"],
+      /* 40 */
       ["C", "A", "B"],
     ];
 
@@ -98,6 +117,13 @@ const AlumnoDetallesPage = () => {
   return (
     <LayoutAdmin>
       <div className="flex flex-col items-center justify-center h-full">
+        <div className="mb-8">
+          <Button>
+            <Link className="text-blue-500 hover:underline" href="/admin/all">
+              👈 Regresar al Listado de Alumnos
+            </Link>
+          </Button>
+        </div>
         {alumno && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="bg-white p-4 rounded-lg shadow">
