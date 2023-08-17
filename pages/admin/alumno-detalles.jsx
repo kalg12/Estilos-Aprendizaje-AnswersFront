@@ -9,9 +9,10 @@ import {
   Button,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { getAlumnoByCurp } from "../../src/services/api"; // Asegúrate de importar la función correcta para obtener el alumno por CURP
+import { getAlumnoByCurp } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
 import Link from "next/link";
+import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const AlumnoDetallesPage = () => {
   const router = useRouter();
@@ -40,36 +41,60 @@ const AlumnoDetallesPage = () => {
       ["A", "C", "B"],
       /* 3 */
       ["B", "A", "C"],
+      /* 4 */
       ["C", "B", "A"],
+      /* 5 */
       ["C", "B", "A"],
+      /* 6 */
       ["B", "A", "C"],
+      /* 7 */
       ["A", "B", "C"],
+      /* 8 */
       ["B", "A", "C"],
+      /* 9 */
       ["A", "C", "B"],
+      /* 10 */
       ["C", "B", "A"],
-
+      /* 11 */
       ["B", "A", "C"],
+      /* 12 */
       ["B", "C", "A"],
+      /* 13 */
       ["C", "A", "B"],
+      /* 14 */
       ["A", "B", "C"],
+      /* 15 */
       ["B", "A", "C"],
+      /* 16 */
       ["A", "C", "B"],
+      /* 17 */
       ["C", "B", "A"],
+      /* 18 */
       ["C", "A", "B"],
+      /* 19 */
       ["A", "B", "C"],
+      /* 20 */
       ["A", "C", "B"],
-
+      /* 21 */
       ["B", "C", "A"],
+      /* 22 */
       ["C", "A", "B"],
+      /* 23 */
       ["A", "B", "C"],
+      /* 24 */
       ["B", "A", "C"],
+      /* 25 */
       ["A", "B", "C"],
+      /* 26 */
       ["C", "B", "A"],
+      /* 27 */
       ["B", "A", "C"],
+      /* 28 */
       ["C", "B", "A"],
+      /* 29 */
       ["B", "C", "A"],
+      /* 30 */
       ["C", "B", "A"],
-
       /* 31 */
       ["B", "A", "C"],
       /* 32 */
@@ -113,6 +138,33 @@ const AlumnoDetallesPage = () => {
     }
     return respuestasAlumno;
   };
+
+  // Define los estilos del documento PDF
+  const pdfStyles = StyleSheet.create({
+    page: {
+      flexDirection: "row",
+      backgroundColor: "#E4E4E4",
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1,
+    },
+  });
+
+  // Crea el componente del documento PDF
+  const PDFDocument = () => (
+    <Document>
+      <Page size="A4" style={pdfStyles.page}>
+        <View style={pdfStyles.section}>
+          <Text>Sección #1</Text>
+        </View>
+        <View style={pdfStyles.section}>
+          <Text>Sección #2</Text>
+        </View>
+      </Page>
+    </Document>
+  );
 
   return (
     <LayoutAdmin>
