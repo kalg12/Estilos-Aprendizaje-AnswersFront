@@ -13,7 +13,6 @@ import { useRouter } from "next/router";
 import { getAlumnoByCurp } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
 import Link from "next/link";
-import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 
 const AlumnoDetallesPage = () => {
   const router = useRouter();
@@ -151,33 +150,6 @@ const AlumnoDetallesPage = () => {
     }
     return count;
   };
-
-  // Define los estilos del documento PDF
-  const pdfStyles = StyleSheet.create({
-    page: {
-      flexDirection: "row",
-      backgroundColor: "#E4E4E4",
-    },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1,
-    },
-  });
-
-  // Crea el componente del documento PDF
-  const PDFDocument = () => (
-    <Document>
-      <Page size="A4" style={pdfStyles.page}>
-        <View style={pdfStyles.section}>
-          <Text>Sección #1</Text>
-        </View>
-        <View style={pdfStyles.section}>
-          <Text>Sección #2</Text>
-        </View>
-      </Page>
-    </Document>
-  );
 
   return (
     <LayoutAdmin>
