@@ -31,18 +31,68 @@ const AlumnoDetallesPage = () => {
   }, [curp]);
 
   const renderRespuestas = () => {
-    const preguntas = []; // Aquí debes proporcionar el patrón de preguntas
-    for (let i = 1; i <= 40; i++) {
-      preguntas.push(
-        <TableRow key={i}>
-          <TableCell>{i}</TableCell>
-          <TableCell>{alumno ? alumno[`element${i}`] : ""}</TableCell>
-          <TableCell>{alumno ? alumno[`element${i + 40}`] : ""}</TableCell>
-          <TableCell>{alumno ? alumno[`element${i + 80}`] : ""}</TableCell>
+    const patronesRespuestas = [
+      ["B", "A", "C"],
+      ["A", "C", "B"],
+      ["B", "A", "C"],
+      ["C", "B", "A"],
+      ["C", "B", "A"],
+      ["B", "A", "C"],
+      ["A", "B", "C"],
+      ["B", "A", "C"],
+      ["A", "C", "B"],
+      ["C", "B", "A"],
+      ["B", "A", "C"],
+      ["B", "C", "A"],
+      ["C", "A", "B"],
+      ["A", "B", "C"],
+      ["B", "A", "C"],
+      ["A", "C", "B"],
+      ["C", "B", "A"],
+      ["C", "A", "B"],
+      ["A", "B", "C"],
+      ["A", "C", "B"],
+      ["B", "C", "A"],
+      ["C", "A", "B"],
+      ["A", "B", "C"],
+      ["B", "A", "C"],
+      ["A", "B", "C"],
+      ["C", "B", "A"],
+      ["B", "A", "C"],
+      ["C", "B", "A"],
+      ["B", "C", "A"],
+      ["C", "A", "B"],
+      ["A", "C", "B"],
+      ["B", "A", "C"],
+      ["C", "A", "B"],
+      ["A", "B", "C"],
+      ["B", "C", "A"],
+      ["A", "C", "B"],
+      ["B", "C", "A"],
+      ["B", "C", "A"],
+      ["C", "A", "B"],
+    ];
+
+    if (!alumno) return null;
+
+    const respuestasAlumno = [];
+    for (let i = 0; i < patronesRespuestas.length; i++) {
+      const respuestaVisual =
+        alumno[`element${i + 1}`] === patronesRespuestas[i][0] ? "X" : "";
+      const respuestaAuditivo =
+        alumno[`element${i + 1}`] === patronesRespuestas[i][1] ? "X" : "";
+      const respuestaKinestesico =
+        alumno[`element${i + 1}`] === patronesRespuestas[i][2] ? "X" : "";
+      respuestasAlumno.push(
+        <TableRow key={i + 1}>
+          <TableCell>{i + 1}</TableCell>
+          <TableCell>{respuestaVisual}</TableCell>
+          <TableCell>{respuestaAuditivo}</TableCell>
+          <TableCell>{respuestaKinestesico}</TableCell>
         </TableRow>
       );
     }
-    return preguntas;
+    return respuestasAlumno;
   };
 
   return (
