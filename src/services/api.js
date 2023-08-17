@@ -18,7 +18,7 @@ export const getAllAlumnos = async () => {
 export const getAlumnoByCurp = async (curp) => {
   try {
     const response = await axios.get(`${API_BASE_URL}/alumnos/${curp}`);
-    return response.data;
+    return response.data[0];
   } catch (error) {
     console.error("Error al obtener el alumno por CURP:", error);
     return null;

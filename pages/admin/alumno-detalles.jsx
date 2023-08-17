@@ -20,6 +20,7 @@ const AlumnoDetallesPage = () => {
   useEffect(() => {
     async function fetchAlumno() {
       if (curp) {
+        console.log(curp);
         const alumnoData = await getAlumnoByCurp(curp); // Reemplaza esto con la llamada correcta a la API
         if (alumnoData) {
           setAlumno(alumnoData);

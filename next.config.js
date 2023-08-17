@@ -8,7 +8,7 @@ const nextConfig = {
     return [
       {
         source: "/admin/alumno-detalles/:curp",
-        destination: "/admin/alumno-detalles", // Ruta de tu componente AlumnoDetallesPage
+        destination: "/admin/alumno-detalles", // Ruta del componente AlumnoDetallesPage
       },
     ];
   },
