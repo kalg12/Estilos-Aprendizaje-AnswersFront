@@ -7,6 +7,7 @@ import {
   TableRow,
   TableCell,
   Button,
+  Spinner,
 } from "@nextui-org/react";
 import { getAllAlumnos } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
@@ -54,8 +55,6 @@ const AllPage = () => {
     ).length;
   };
 
-  // ...
-
   return (
     <LayoutAdmin>
       <div className="flex flex-col items-center justify-center h-full">
@@ -90,52 +89,58 @@ const AllPage = () => {
         </div>
       </div>
 
-      <Table aria-label="Tabla de Alumnos">
-        <TableHeader>
-          <TableColumn key="nombre" align="center">
-            Nombre
-          </TableColumn>
-          <TableColumn key="apellido" align="center">
-            Apellido
-          </TableColumn>
-          <TableColumn key="grupo" align="center">
-            Grupo
-          </TableColumn>
-          <TableColumn key="email" align="center">
-            Email
-          </TableColumn>
-          <TableColumn key="visual" align="center">
-            Visual
-          </TableColumn>
-          <TableColumn key="auditivo" align="center">
-            Auditivo
-          </TableColumn>
-          <TableColumn key="kinestesico" align="center">
-            Kinestésico
-          </TableColumn>
-          <TableColumn key="estilo_aprendizaje" align="center">
-            Estilo de Aprendizaje
-          </TableColumn>
-          <TableColumn key="actions" align="center">
-            Acciones
-          </TableColumn>
-        </TableHeader>
-        <TableBody items={alumnos}>
-          {(alumno, index) => (
-            <TableRow key={alumno.curp}>
-              <TableCell>{alumno.nombre}</TableCell>
-              <TableCell>{alumno.apellido}</TableCell>
-              <TableCell>{alumno.grupo}</TableCell>
-              <TableCell>{alumno.email}</TableCell>
-              <TableCell>{alumno.visual}</TableCell>
-              <TableCell>{alumno.auditivo}</TableCell>
-              <TableCell>{alumno.kinestesico}</TableCell>
-              <TableCell>{alumno.estilo_aprendizaje}</TableCell>
-              <TableCell>{renderActions(alumno)}</TableCell>
-            </TableRow>
-          )}
-        </TableBody>
-      </Table>
+      {alumnos.length > 0 ? (
+        <Table aria-label="Tabla de Alumnos">
+          <TableHeader>
+            <TableColumn key="nombre" align="center">
+              Nombre
+            </TableColumn>
+            <TableColumn key="apellido" align="center">
+              Apellido
+            </TableColumn>
+            <TableColumn key="grupo" align="center">
+              Grupo
+            </TableColumn>
+            <TableColumn key="email" align="center">
+              Email
+            </TableColumn>
+            <TableColumn key="visual" align="center">
+              Visual
+            </TableColumn>
+            <TableColumn key="auditivo" align="center">
+              Auditivo
+            </TableColumn>
+            <TableColumn key="kinestesico" align="center">
+              Kinestésico
+            </TableColumn>
+            <TableColumn key="estilo_aprendizaje" align="center">
+              Estilo de Aprendizaje
+            </TableColumn>
+            <TableColumn key="actions" align="center">
+              Acciones
+            </TableColumn>
+          </TableHeader>
+          <TableBody items={alumnos}>
+            {(alumno, index) => (
+              <TableRow key={alumno.curp}>
+                <TableCell>{alumno.nombre}</TableCell>
+                <TableCell>{alumno.apellido}</TableCell>
+                <TableCell>{alumno.grupo}</TableCell>
+                <TableCell>{alumno.email}</TableCell>
+                <TableCell>{alumno.visual}</TableCell>
+                <TableCell>{alumno.auditivo}</TableCell>
+                <TableCell>{alumno.kinestesico}</TableCell>
+                <TableCell>{alumno.estilo_aprendizaje}</TableCell>
+                <TableCell>{renderActions(alumno)}</TableCell>
+              </TableRow>
+            )}
+          </TableBody>
+        </Table>
+      ) : (
+        <div className="flex items-center justify-center h-full">
+          <Spinner label="Cargando" color="primary" labelColor="primary" />
+        </div>
+      )}
     </LayoutAdmin>
   );
 };
