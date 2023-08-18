@@ -10,9 +10,9 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import { getAlumnoByCurp } from "../../src/services/api";
-import LayoutAdmin from "./LayoutAdmin";
+import LayoutAdmin from "../LayoutAdmin";
 import Link from "next/link";
+import { getAlumnoByCurp } from "@/services/api";
 
 const AlumnoDetallesPage = () => {
   const router = useRouter();
@@ -23,7 +23,7 @@ const AlumnoDetallesPage = () => {
   useEffect(() => {
     async function fetchAlumno() {
       if (curp) {
-        const alumnoData = await getAlumnoByCurp(curp); // Reemplaza esto con la llamada correcta a la API
+        const alumnoData = await getAlumnoByCurp(curp); // Llamada correcta a la API
         if (alumnoData) {
           setAlumno(alumnoData);
         }
