@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "http://localhost:4000/api";
+const API_BASE_URL = process.env.API_BASE_URL || "http://localhost:4000/api";
 
 const login = async (username, password) => {
   try {
@@ -18,11 +18,18 @@ const login = async (username, password) => {
   }
 };
 
+const removeToken = () => {
+  if (typeof window !== "undefined") {
+    localStorage.removeItem("token");
+  }
+};
+
 const getToken = () => {
   if (typeof window !== "undefined") {
     return localStorage.getItem("token");
+  } else {
+    return null; // Handle the case when running on the server
   }
-  return null;
 };
 
-export { login, getToken };
+export { login, getToken, removeToken };
