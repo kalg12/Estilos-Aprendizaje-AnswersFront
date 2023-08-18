@@ -24,7 +24,6 @@ const AllPage = () => {
         setAlumnos(alumnosData);
       }
     }
-
     fetchAlumnos();
   }, []);
 
