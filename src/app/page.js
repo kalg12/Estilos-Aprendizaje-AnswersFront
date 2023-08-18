@@ -6,11 +6,22 @@ import {
   NavbarContent,
   NavbarItem,
   Button,
+  Modal,
+  ModalContent,
+  ModalHeader,
+  ModalBody,
+  ModalFooter,
+  useDisclosure,
+  Checkbox,
+  Input,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { MailIcon } from "@/components/MailIcon";
+import { LockIcon } from "@/components/LockIcon";
 
 export default function Home() {
   const currentYear = new Date().getFullYear(); // Obtiene el año actual
+  const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
   return (
     <div className="flex flex-col min-h-screen">
@@ -21,7 +32,13 @@ export default function Home() {
           </NavbarBrand>
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button as={Link} color="warning" href="#" variant="flat">
+              <Button
+                onPress={onOpen}
+                as={Link}
+                color="warning"
+                href="#"
+                variant="flat"
+              >
                 Iniciar Sesión
               </Button>
             </NavbarItem>
@@ -34,7 +51,63 @@ export default function Home() {
           backgroundImage:
             "url('http://fulltech.com.mx/dist/banner-cetmar18.jpg')",
         }}
-      ></main>
+      >
+        <Modal
+          isOpen={isOpen}
+          onOpenChange={onOpenChange}
+          placement="top-center"
+        >
+          <ModalContent>
+            {(onClose) => (
+              <>
+                <ModalHeader className="flex flex-col gap-1">
+                  Iniciar Sesión
+                </ModalHeader>
+                <ModalBody>
+                  <Input
+                    autoFocus
+                    endContent={
+                      <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                    }
+                    label="Usuario"
+                    placeholder="Enter your email"
+                    variant="bordered"
+                  />
+                  <Input
+                    endContent={
+                      <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
+                    }
+                    label="Contraseña"
+                    placeholder="Enter your password"
+                    type="password"
+                    variant="bordered"
+                  />
+                  <div className="flex py-2 px-1 justify-between">
+                    <Checkbox
+                      classNames={{
+                        label: "text-small",
+                      }}
+                    >
+                      Recordar datos
+                    </Checkbox>
+                    <Link color="primary" href="#" size="sm">
+                      ¿Olvidó la contraseña?
+                    </Link>
+                  </div>
+                </ModalBody>
+                <ModalFooter>
+                  <Button color="danger" variant="flat" onClick={onClose}>
+                    Cerrar
+                  </Button>
+                  <Button color="primary" onPress={onClose}>
+                    Iniciar Sesión
+                  </Button>
+                </ModalFooter>
+              </>
+            )}
+          </ModalContent>
+        </Modal>
+      </main>
       <footer className="bg-gray-800 text-slate-100 text-center text-xs p-3">
         <p>© {currentYear} - Resultados - Estilos de Aprendizaje - CETMAR18</p>
       </footer>
