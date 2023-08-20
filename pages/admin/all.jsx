@@ -134,7 +134,7 @@ const AllPage = () => {
             <p className="text-lg">{countDominioDosEstilos()}</p>
           </div>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 mb-4">
           <Button color="success" onClick={downloadExcel}>
             Descargar Excel
           </Button>

@@ -64,8 +64,7 @@ export default function Home() {
       <main
         className="flex-1 bg-cover bg-center"
         style={{
-          backgroundImage:
-            "url('http://fulltech.com.mx/dist/banner-cetmar18.jpg')",
+          backgroundImage: "url('../img/cetbarbanner.jpg')",
         }}
       >
         <Modal
@@ -90,6 +89,7 @@ export default function Home() {
                     label="Usuario"
                     placeholder="Ingrese su usuario"
                     variant="bordered"
+                    className="text-gray-950"
                   />
                   <Input
                     value={password}
@@ -101,6 +101,7 @@ export default function Home() {
                     placeholder="Ingrese su contraseña"
                     type="password"
                     variant="bordered"
+                    className="text-gray-950"
                   />
                   <div className="flex py-2 px-1 justify-between">
                     <Checkbox classNames={{ label: "text-small" }}>
