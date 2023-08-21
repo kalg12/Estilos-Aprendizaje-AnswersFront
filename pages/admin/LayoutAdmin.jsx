@@ -54,25 +54,23 @@ const LayoutAdmin = ({ children }) => {
     <>
       {isLoading ? null : showPage ? (
         <div className="flex flex-col min-h-screen">
-          <navbar>
-            <Navbar className="bg-gray-800">
-              <NavbarBrand className="text-blue-50">
-                Resultados - Estilos de Aprendizaje
-              </NavbarBrand>
-              <NavbarContent justify="end">
-                <NavbarItem>
-                  <Button
-                    color="warning"
-                    href="#"
-                    variant="flat"
-                    onClick={handleLogout} // Agrega el manejador de clic para cerrar sesión
-                  >
-                    Cerrar Sesión
-                  </Button>
-                </NavbarItem>
-              </NavbarContent>
-            </Navbar>
-          </navbar>
+          <Navbar className="bg-gray-800">
+            <NavbarBrand className="text-blue-50">
+              Resultados - Estilos de Aprendizaje
+            </NavbarBrand>
+            <NavbarContent justify="end">
+              <NavbarItem>
+                <Button
+                  color="warning"
+                  href="#"
+                  variant="flat"
+                  onClick={handleLogout}
+                >
+                  Cerrar Sesión
+                </Button>
+              </NavbarItem>
+            </NavbarContent>
+          </Navbar>
           <main className="flex-1 p-2">{children}</main>
           <footer className="bg-gray-800 text-slate-100 text-center text-xs p-3">
             <p>
