@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getToken } from "./authService";
 
-const API_BASE_URL = process.env.API_BASE_URL;
+const API_BASE_URL = "https://estilos-aprendijzae-backend-p58u-dev.fl0.io/api";
 
 // Función para obtener todos los alumnos
 export const getAllAlumnos = async () => {
