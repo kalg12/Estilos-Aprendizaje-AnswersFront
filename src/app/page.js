@@ -69,7 +69,10 @@ export default function Home() {
       >
         <Modal
           isOpen={isOpen}
-          onOpenChange={() => onOpenChange(!isOpen)}
+          onOpenChange={() => {
+            onOpenChange(!isOpen);
+            setError(""); // Limpiar el mensaje de error al abrir el modal
+          }}
           placement="top-center"
         >
           <ModalContent>
@@ -79,6 +82,7 @@ export default function Home() {
                   Iniciar Sesión
                 </ModalHeader>
                 <ModalBody>
+                  {error && <p className="text-danger text-sm mb-2">{error}</p>}
                   <Input
                     autoFocus
                     value={username}
