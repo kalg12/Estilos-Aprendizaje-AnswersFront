@@ -1,2 +1,9 @@
 [[plugins]]
   package = "@netlify/plugin-nextjs"
+
+[build]
+  command = "npm run build"  # Asegúrate de que el comando de construcción sea el adecuado para tu proyecto
+  publish = "out"
+
+[build.environment]
+  NETLIFY_NEXT_PLUGIN_SKIP = "true"
