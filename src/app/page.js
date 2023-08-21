@@ -64,7 +64,7 @@ export default function Home() {
       <main
         className="flex-1 bg-cover bg-center"
         style={{
-          backgroundImage: "url('../img/cetbarbanner.jpg')",
+          backgroundImage: `url(/img/banner-cetmar18.jpg)`,
         }}
       >
         <Modal
