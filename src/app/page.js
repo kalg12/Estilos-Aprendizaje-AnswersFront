@@ -39,6 +39,12 @@ export default function Home() {
     }
   };
 
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <navbar>
@@ -87,6 +93,7 @@ export default function Home() {
                     autoFocus
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     endContent={
                       <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }
@@ -98,6 +105,7 @@ export default function Home() {
                   <Input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     endContent={
                       <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }
