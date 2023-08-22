@@ -152,7 +152,7 @@ const AlumnosPublicPage = () => {
   };
 
   return (
-    <LayoutAdmin>
+    <LayoutPublic>
       <div className="flex flex-col items-center justify-center h-full">
         <div className="mb-8">
           <Button>
@@ -228,7 +228,7 @@ const AlumnosPublicPage = () => {
           </div>
         )}
       </div>
-    </LayoutAdmin>
+    </LayoutPublic>
   );
 };
 
