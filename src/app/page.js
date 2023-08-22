@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -26,11 +26,19 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [token, setToken] = useState("");
+
+  // Simulación de verificación de token
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
 
   const handleLogin = async () => {
     try {
       const token = await login(username, password);
       localStorage.setItem("token", token);
+      setToken(token);
       // Redirige al usuario después de un inicio de sesión exitoso
       window.location.href = "/admin/all";
       onOpenChange(false);
@@ -54,15 +62,20 @@ export default function Home() {
           </NavbarBrand>
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button
-                onPress={onOpen}
-                as={Link}
-                color="warning"
-                href="#"
-                variant="flat"
-              >
-                Iniciar Sesión
-              </Button>
+              {token ? (
+                <Button
+                  as={Link}
+                  color="primary"
+                  href="/admin/all"
+                  variant="flat"
+                >
+                  Ir al Dashboard
+                </Button>
+              ) : (
+                <Button onPress={onOpen} color="warning" variant="flat">
+                  Iniciar Sesión
+                </Button>
+              )}
             </NavbarItem>
           </NavbarContent>
         </Navbar>
