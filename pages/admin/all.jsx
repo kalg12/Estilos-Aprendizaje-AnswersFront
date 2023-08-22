@@ -48,10 +48,9 @@ const AllPage = () => {
   const countDominioDosEstilos = () => {
     return alumnos.filter(
       (alumno) =>
-        alumno.estilo_aprendizaje.toLowerCase() === "visual,auditivo" ||
-        alumno.estilo_aprendizaje.toLowerCase() === "auditivo,visual" ||
-        alumno.estilo_aprendizaje.toLowerCase() === "auditivo, kinestesico" ||
-        alumno.estilo_aprendizaje.toLowerCase() === "kinestesico, auditivo"
+        alumno.estilo_aprendizaje.toLowerCase().includes("visual") &&
+        (alumno.estilo_aprendizaje.toLowerCase().includes("auditivo") ||
+          alumno.estilo_aprendizaje.toLowerCase().includes("kinestesico"))
     ).length;
   };
 
