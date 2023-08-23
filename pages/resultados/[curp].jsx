@@ -28,20 +28,13 @@ const AlumnosPublicPage = () => {
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
-    async function fetchAlumno() {
-      if (curp) {
-        try {
-          const alumnoData = await getAlumnoByCurpPublic(curp); // Llamada correcta a la API
-          if (alumnoData) {
-            setAlumno(alumnoData);
-          }
-        } catch (error) {
-          console.error("Error al obtener los datos del alumno:", error);
+    if (curp) {
+      getAlumnoByCurpPublic(curp).then((alumnoData) => {
+        if (alumnoData) {
+          setAlumno(alumnoData);
         }
-      }
+      });
     }
-
-    fetchAlumno();
   }, [curp]);
 
   const handleSearch = async () => {
