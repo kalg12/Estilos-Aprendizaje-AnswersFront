@@ -10,7 +10,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import LayoutPublic from "../LayoutPublic";
+import LayoutPublic from "./LayoutPublic";
 import { getAlumnoByCurpPublic } from "@/services/api";
 import {
   Page,
@@ -24,7 +24,6 @@ import {
 const AlumnosPublicPage = () => {
   const router = useRouter();
   const { curp } = router.query;
-  console.log(curp);
 
   const [alumno, setAlumno] = useState(null);
 
