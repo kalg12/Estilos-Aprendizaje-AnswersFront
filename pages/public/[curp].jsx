@@ -8,30 +8,45 @@ import {
   TableCell,
   Button,
   Spinner,
+  Input,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import LayoutPublic from "./LayoutPublic";
-import Link from "next/link";
-import { getAlumnoByCurp } from "@/services/api";
+import { getAlumnoByCurpPublic } from "@/services/api";
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
   const { curp } = router.query;
 
   const [alumno, setAlumno] = useState(null);
+  const [searchCurp, setSearchCurp] = useState("");
+  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     async function fetchAlumno() {
       if (curp) {
-        const alumnoData = await getAlumnoByCurp(curp); // Llamada correcta a la API
+        setSearching(true);
+        const alumnoData = await getAlumnoByCurpPublic(curp); // Llamada correcta a la API
         if (alumnoData) {
           setAlumno(alumnoData);
         }
+        setSearching(false);
       }
     }
 
     fetchAlumno();
   }, [curp]);
+
+  const handleSearch = async () => {
+    if (searchCurp) {
+      setSearching(true);
+      const alumnoData = await getAlumnoByCurpPublic(searchCurp);
+      if (alumnoData) {
+        setAlumno(alumnoData);
+      }
+      setSearching(false);
+    }
+  };
 
   const patronesRespuestas = [
     /* 1 */
@@ -154,16 +169,9 @@ const AlumnosPublicPage = () => {
   return (
     <LayoutPublic>
       <div className="flex flex-col items-center justify-center h-full">
-        <div className="mb-8">
-          <Button>
-            <Link className="text-blue-500 hover:underline" href="/admin/all">
-              👈 Regresar al Listado de Alumnos
-            </Link>
-          </Button>
-        </div>
         {alumno ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div className="bg-white p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
+            <div className="sticky top-16 bg-white p-4 rounded-lg shadow max-h-[300px] overflow-y-auto">
               <p className="text-2xl font-semibold mb-4 text-center">
                 Información del Alumno
               </p>
@@ -223,7 +231,7 @@ const AlumnosPublicPage = () => {
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full ">
             <Spinner label="Cargando" color="primary" labelColor="primary" />
           </div>
         )}

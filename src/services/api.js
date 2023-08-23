@@ -38,3 +38,14 @@ export const getAlumnoByCurp = async (curp) => {
     return null;
   }
 };
+
+// Función pública para obtener un alumno por su CURP
+export const getAlumnoByCurpPublic = async (curp) => {
+  try {
+    const response = await axios.get(`${API_BASE_URL}/public/${curp}`);
+    return response.data[0];
+  } catch (error) {
+    console.error("Error al obtener el alumno por CURP:", error);
+    return null;
+  }
+};
