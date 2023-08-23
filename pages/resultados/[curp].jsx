@@ -22,7 +22,8 @@ import {
 } from "@react-pdf/renderer";
 
 const AlumnosPublicPage = () => {
-  const curp = "OOBV081105MGRNLLA9";
+  const router = useRouter();
+  const { curp } = router.query;
 
   const [alumno, setAlumno] = useState(null);
 
