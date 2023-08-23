@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   Table,
   TableHeader,
@@ -9,29 +10,45 @@ import {
   Button,
   Spinner,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
-import Link from "next/link";
-import { getAlumnoByCurp } from "@/services/api";
 import LayoutPublic from "./LayoutPublic";
+import { getAlumnoByCurpPublic } from "@/services/api";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  PDFDownloadLink,
+  StyleSheet,
+} from "@react-pdf/renderer";
+import Link from "next/link";
 
-const AlumnoDetallesPage = () => {
+const AlumnosPublicPage = () => {
   const router = useRouter();
-  const { curp } = router.query;
-
+  const [curpalumno, setCurpAlumno] = useState("");
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
-    async function fetchAlumno() {
-      if (curp) {
-        const alumnoData = await getAlumnoByCurp(curp); // Llamada correcta a la API
-        if (alumnoData) {
-          setAlumno(alumnoData);
-        }
+    async function getAlumnoByCurp() {
+      const { curpalumno } = router.query;
+      setCurpAlumno(curpalumno);
+      const alumnoData = await getAlumnoByCurpPublic(curpalumno);
+      if (alumnoData) {
+        setAlumno(alumnoData);
       }
     }
+    getAlumnoByCurp();
+  }, [router]);
 
-    fetchAlumno();
-  }, [curp]);
+  const handleSearch = async () => {
+    if (searchCurp) {
+      setSearching(true);
+      const alumnoData = await getAlumnoByCurpPublic(searchCurp);
+      if (alumnoData) {
+        setAlumno(alumnoData);
+      }
+      setSearching(false);
+    }
+  };
 
   const patronesRespuestas = [
     /* 1 */
@@ -151,19 +168,73 @@ const AlumnoDetallesPage = () => {
     return count;
   };
 
+  // Create styles
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: "row",
+      backgroundColor: "#2371DE",
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1,
+      backgroundColor: "#E4E4E4",
+    },
+  });
+
+  // Create Document Component
+  const MyDocument = () => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 18,
+              fontWeight: "bold",
+              marginBottom: 10,
+            }}
+          >
+            ESTILOS DE APRENDIZAJE - CETMAR 18
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              textAlign: "center",
+              margin: 1,
+            }}
+          >
+            Nombre: {alumno.nombre} {alumno.apellido}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "center",
+              margin: 0.5,
+            }}
+          >
+            CURP: {alumno.curp}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "center",
+              margin: 0.5,
+            }}
+          >
+            Grupo: {alumno.grupo}
+          </Text>
+        </View>
+      </Page>
+    </Document>
+  );
+
   return (
     <LayoutPublic>
       <div className="flex flex-col items-center justify-center h-full">
-        <div className="mb-8">
-          <Button>
-            <Link className="text-blue-500 hover:underline" href="/admin/all">
-              👈 Regresar al Listado de Alumnos
-            </Link>
-          </Button>
-        </div>
         {alumno ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-            <div className="bg-white p-4 rounded-lg shadow">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
+            <div className="flex flex-col sticky top-16 bg-white p-4 rounded-lg shadow max-h-[250px] overflow-y-auto">
               <p className="text-2xl font-semibold mb-4 text-center">
                 Información del Alumno
               </p>
@@ -180,6 +251,18 @@ const AlumnoDetallesPage = () => {
                 <strong>Estilo de Aprendizaje:</strong>{" "}
                 {alumno.estilo_aprendizaje}
               </p>
+              <PDFDownloadLink
+                document={<MyDocument />}
+                fileName={`estilo_aprendizaje_${curpalumno}.pdf`}
+              >
+                <Button
+                  className="mt-4 align-center"
+                  variant="flat"
+                  color="danger"
+                >
+                  Descargar PDF
+                </Button>
+              </PDFDownloadLink>
             </div>
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-2xl font-semibold mb-4 text-center">
@@ -223,7 +306,7 @@ const AlumnoDetallesPage = () => {
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full">
+          <div className="flex items-center justify-center h-full ">
             <Spinner label="Cargando" color="primary" labelColor="primary" />
           </div>
         )}
@@ -232,4 +315,4 @@ const AlumnoDetallesPage = () => {
   );
 };
 
-export default AlumnoDetallesPage;
+export default AlumnosPublicPage;
