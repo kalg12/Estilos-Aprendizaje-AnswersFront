@@ -10,7 +10,7 @@ import {
   Spinner,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
-import LayoutPublic from "./LayoutPublic";
+import LayoutPublic from "../LayoutPublic";
 import { getAlumnoByCurpPublic } from "@/services/api";
 import {
   Page,
