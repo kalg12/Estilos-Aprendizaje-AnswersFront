@@ -1,6 +1,5 @@
-import React, { useState } from "react";
+import React from "react";
 import { Navbar, NavbarBrand } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import "tailwindcss/tailwind.css";
 
 const LayoutPublic = ({ children }) => {
