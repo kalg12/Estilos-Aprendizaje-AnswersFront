@@ -171,7 +171,7 @@ const AlumnosPublicPage = () => {
       <div className="flex flex-col items-center justify-center h-full">
         {alumno ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
-            <div className="sticky top-16 bg-white p-4 rounded-lg shadow max-h-[300px] overflow-y-auto">
+            <div className="flex flex-col sticky top-16 bg-white p-4 rounded-lg shadow max-h-[250px] overflow-y-auto">
               <p className="text-2xl font-semibold mb-4 text-center">
                 Información del Alumno
               </p>
@@ -188,6 +188,9 @@ const AlumnosPublicPage = () => {
                 <strong>Estilo de Aprendizaje:</strong>{" "}
                 {alumno.estilo_aprendizaje}
               </p>
+              <Button className="mt-4" variant="flat" color="danger">
+                Descargar PDF
+              </Button>
             </div>
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-2xl font-semibold mb-4 text-center">
