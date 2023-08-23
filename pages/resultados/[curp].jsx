@@ -13,6 +13,14 @@ import {
 import { useRouter } from "next/router";
 import LayoutPublic from "./LayoutPublic";
 import { getAlumnoByCurpPublic } from "@/services/api";
+import {
+  Page,
+  Text,
+  View,
+  Document,
+  PDFDownloadLink,
+  StyleSheet,
+} from "@react-pdf/renderer";
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
@@ -166,6 +174,49 @@ const AlumnosPublicPage = () => {
     return count;
   };
 
+  // Create styles
+  const styles = StyleSheet.create({
+    page: {
+      flexDirection: "row",
+      backgroundColor: "#E4E4E4",
+    },
+    section: {
+      margin: 10,
+      padding: 10,
+      flexGrow: 1,
+    },
+  });
+
+  // Create Document Component
+  const MyDocument = () => (
+    <Document>
+      <Page size="A4" style={styles.page}>
+        <View style={styles.section}>
+          <Text
+            style={{
+              textAlign: "center",
+              fontSize: 20,
+              fontWeight: "bold",
+              marginBottom: 10,
+            }}
+          >
+            ESTILOS DE APRENDIZAJE - CETMAR 18
+          </Text>
+          <Text
+            style={{
+              fontSize: 13,
+              textAlign: "center",
+              margin: 10,
+            }}
+          >
+            {alumno.nombre} {alumno.apellido}
+          </Text>
+          <Text>CURP: {alumno.curp}</Text>
+        </View>
+      </Page>
+    </Document>
+  );
+
   return (
     <LayoutPublic>
       <div className="flex flex-col items-center justify-center h-full">
@@ -188,9 +239,18 @@ const AlumnosPublicPage = () => {
                 <strong>Estilo de Aprendizaje:</strong>{" "}
                 {alumno.estilo_aprendizaje}
               </p>
-              <Button className="mt-4" variant="flat" color="danger">
-                Descargar PDF
-              </Button>
+              <PDFDownloadLink
+                document={<MyDocument />}
+                fileName={`estilo_aprendizaje_${curp}.pdf`}
+              >
+                <Button
+                  className="mt-4 align-center"
+                  variant="flat"
+                  color="danger"
+                >
+                  Descargar PDF
+                </Button>
+              </PDFDownloadLink>
             </div>
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-2xl font-semibold mb-4 text-center">
