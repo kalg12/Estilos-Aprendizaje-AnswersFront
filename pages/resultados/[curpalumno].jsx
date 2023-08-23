@@ -23,19 +23,19 @@ import {
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
-  const { curp } = router.query;
+  const { curpalumno } = router.query;
 
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
-    if (curp) {
-      getAlumnoByCurpPublic(curp).then((alumnoData) => {
+    if (curpalumno) {
+      getAlumnoByCurpPublic(curpalumno).then((alumnoData) => {
         if (alumnoData) {
           setAlumno(alumnoData);
         }
       });
     }
-  }, [curp]);
+  }, [curpalumno]);
 
   const handleSearch = async () => {
     if (searchCurp) {
@@ -251,7 +251,7 @@ const AlumnosPublicPage = () => {
               </p>
               <PDFDownloadLink
                 document={<MyDocument />}
-                fileName={`estilo_aprendizaje_${curp}.pdf`}
+                fileName={`estilo_aprendizaje_${curpalumno}.pdf`}
               >
                 <Button
                   className="mt-4 align-center"
