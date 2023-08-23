@@ -178,12 +178,13 @@ const AlumnosPublicPage = () => {
   const styles = StyleSheet.create({
     page: {
       flexDirection: "row",
-      backgroundColor: "#E4E4E4",
+      backgroundColor: "#2371DE",
     },
     section: {
       margin: 10,
       padding: 10,
       flexGrow: 1,
+      backgroundColor: "#E4E4E4",
     },
   });
 
@@ -195,7 +196,7 @@ const AlumnosPublicPage = () => {
           <Text
             style={{
               textAlign: "center",
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: "bold",
               marginBottom: 10,
             }}
@@ -206,12 +207,29 @@ const AlumnosPublicPage = () => {
             style={{
               fontSize: 13,
               textAlign: "center",
-              margin: 10,
+              margin: 1,
             }}
           >
-            {alumno.nombre} {alumno.apellido}
+            Nombre: {alumno.nombre} {alumno.apellido}
           </Text>
-          <Text>CURP: {alumno.curp}</Text>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "center",
+              margin: 0.5,
+            }}
+          >
+            CURP: {alumno.curp}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "center",
+              margin: 0.5,
+            }}
+          >
+            Grupo: {alumno.grupo}
+          </Text>
         </View>
       </Page>
     </Document>
