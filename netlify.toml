@@ -7,3 +7,13 @@
 
 [build.environment]
   NETLIFY_NEXT_PLUGIN_SKIP = "true"
+
+[[redirects]]
+  from = "/admin/alumnos-detalles/:curp"
+  to = "/admin/alumnos-detalles/:curp"
+  status = 200
+
+[[redirects]]
+  from = "/resultados/:curp"
+  to = "/resultados/:curp"
+  status = 200
