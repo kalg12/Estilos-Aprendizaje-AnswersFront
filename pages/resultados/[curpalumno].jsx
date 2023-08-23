@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/router";
 import {
   Table,
   TableHeader,
@@ -9,7 +10,6 @@ import {
   Button,
   Spinner,
 } from "@nextui-org/react";
-import { useRouter } from "next/router";
 import LayoutPublic from "./LayoutPublic";
 import { getAlumnoByCurpPublic } from "@/services/api";
 import {
@@ -20,6 +20,7 @@ import {
   PDFDownloadLink,
   StyleSheet,
 } from "@react-pdf/renderer";
+import Link from "next/link";
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
@@ -29,8 +30,10 @@ const AlumnosPublicPage = () => {
 
   useEffect(() => {
     if (curpalumno) {
+      console.log(curpalumno);
       getAlumnoByCurpPublic(curpalumno).then((alumnoData) => {
         if (alumnoData) {
+          console.log(alumnoData);
           setAlumno(alumnoData);
         }
       });
