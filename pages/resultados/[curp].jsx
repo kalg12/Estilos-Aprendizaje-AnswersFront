@@ -8,7 +8,6 @@ import {
   TableCell,
   Button,
   Spinner,
-  Input,
 } from "@nextui-org/react";
 import { useRouter } from "next/router";
 import LayoutPublic from "./LayoutPublic";
@@ -25,20 +24,21 @@ import {
 const AlumnosPublicPage = () => {
   const router = useRouter();
   const { curp } = router.query;
+  console.log(curp);
 
   const [alumno, setAlumno] = useState(null);
-  const [searchCurp, setSearchCurp] = useState("");
-  const [searching, setSearching] = useState(false);
 
   useEffect(() => {
     async function fetchAlumno() {
       if (curp) {
-        setSearching(true);
-        const alumnoData = await getAlumnoByCurpPublic(curp); // Llamada correcta a la API
-        if (alumnoData) {
-          setAlumno(alumnoData);
+        try {
+          const alumnoData = await getAlumnoByCurpPublic(curp); // Llamada correcta a la API
+          if (alumnoData) {
+            setAlumno(alumnoData);
+          }
+        } catch (error) {
+          console.error("Error al obtener los datos del alumno:", error);
         }
-        setSearching(false);
       }
     }
 
