@@ -20,24 +20,24 @@ import {
   PDFDownloadLink,
   StyleSheet,
 } from "@react-pdf/renderer";
-import Link from "next/link";
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
-  const [curpalumno, setCurpAlumno] = useState("");
+  const [curpalumno, setCurpAlumno] = useState("CURP_ALUMNO");
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
-    async function getAlumnoByCurp() {
-      const { curpalumno } = router.query;
-      setCurpAlumno(curpalumno);
-      const alumnoData = await getAlumnoByCurpPublic(curpalumno);
+    if (router.query.curpalumno) {
+      setCurpAlumno(router.query.curpalumno);
+    }
+    const getAlumno = async () => {
+      const alumnoData = await getAlumnoByCurpPublic(router.query.curpalumno);
       if (alumnoData) {
         setAlumno(alumnoData);
       }
-    }
-    getAlumnoByCurp();
-  }, [router]);
+    };
+    getAlumno();
+  }, [router.query.curpalumno]);
 
   const handleSearch = async () => {
     if (searchCurp) {
@@ -223,6 +223,15 @@ const AlumnosPublicPage = () => {
             }}
           >
             Grupo: {alumno.grupo}
+          </Text>
+          <Text
+            style={{
+              fontSize: 12,
+              textAlign: "center",
+              margin: 0.7,
+            }}
+          >
+            Estilo de Aprendizaje: {alumno.estilo_aprendizaje}
           </Text>
         </View>
       </Page>
