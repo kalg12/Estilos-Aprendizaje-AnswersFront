@@ -8,4 +8,4 @@ const nextConfig = {
   trailingSlash: true, // Agregar esta línea para habilitar trailing slash en las rutas
 };
 
-module.exports = nextConfig;
+export default nextConfig;
