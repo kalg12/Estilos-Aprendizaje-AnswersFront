@@ -10,10 +10,10 @@
 
 [[redirects]]
   from = "/admin/alumnos-detalles/:curp"
-  to = "/admin/alumnos-detalles/:curp"
+  to = "/index.html"
   status = 200
 
 [[redirects]]
   from = "/resultados/:curp"
-  to = "/resultados/:curp"
+  to = "/index.html"
   status = 200
