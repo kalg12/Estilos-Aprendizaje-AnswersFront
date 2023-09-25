@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Navbar,
   NavbarBrand,
@@ -26,17 +26,35 @@ export default function Home() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [token, setToken] = useState("");
+
+  // Simulación de verificación de token
+  useEffect(() => {
+    const storedToken = localStorage.getItem("token");
+    setToken(storedToken);
+  }, []);
 
   const handleLogin = async () => {
     try {
       const token = await login(username, password);
       localStorage.setItem("token", token);
+      setToken(token);
       // Redirige al usuario después de un inicio de sesión exitoso
+<<<<<<< HEAD
       window.location.href =
         "https://master--cheery-dieffenbachia-258984.netlify.app/admin/all";
+=======
+      window.location.href = "/admin/all";
+>>>>>>> f1ab57015526fc58a9779320f602d4942eabb36b
       onOpenChange(false);
     } catch (error) {
       setError("Credenciales incorrectas");
+    }
+  };
+
+  const handleKeyPress = (event) => {
+    if (event.key === "Enter") {
+      handleLogin();
     }
   };
 
@@ -49,15 +67,20 @@ export default function Home() {
           </NavbarBrand>
           <NavbarContent justify="end">
             <NavbarItem>
-              <Button
-                onPress={onOpen}
-                as={Link}
-                color="warning"
-                href="#"
-                variant="flat"
-              >
-                Iniciar Sesión
-              </Button>
+              {token ? (
+                <Button
+                  as={Link}
+                  color="primary"
+                  href="/admin/all"
+                  variant="flat"
+                >
+                  Ir al Dashboard
+                </Button>
+              ) : (
+                <Button onPress={onOpen} color="warning" variant="flat">
+                  Iniciar Sesión
+                </Button>
+              )}
             </NavbarItem>
           </NavbarContent>
         </Navbar>
@@ -88,6 +111,7 @@ export default function Home() {
                     autoFocus
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     endContent={
                       <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }
@@ -99,6 +123,7 @@ export default function Home() {
                   <Input
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
+                    onKeyPress={handleKeyPress}
                     endContent={
                       <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }

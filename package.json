@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@nextui-org/react": "^2.0.22",
+    "@react-pdf/renderer": "^3.1.12",
     "@react-stately/data": "^3.10.1",
     "autoprefixer": "10.4.15",
     "axios": "^1.4.0",
@@ -26,6 +27,6 @@
     "tailwindcss": "3.3.3"
   },
   "devDependencies": {
-    "@netlify/plugin-nextjs": "^4.40.0"
+    "@netlify/plugin-nextjs": "^4.40.1"
   }
 }
