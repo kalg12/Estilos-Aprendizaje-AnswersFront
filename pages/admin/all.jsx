@@ -63,7 +63,7 @@ const AllPage = () => {
     worksheet.getColumn("B").width = 35; // Ancho para Nombre
 
     // Encabezados
-    const headers = ["ID", "Nombres", "Grupo"];
+    const headers = ["ID", "Nombres", "Grupo", "Estilo de Aprendizaje"]; // Agregado de estilo de aprendizaje
     for (let i = 1; i <= 40; i++) {
       headers.push(i.toString());
     }
@@ -75,6 +75,7 @@ const AllPage = () => {
         alumno.curp,
         `${alumno.nombre} ${alumno.apellido}`,
         alumno.grupo,
+        alumno.estilo_aprendizaje, // Agregado de estilo de aprendizaje
       ];
       for (let i = 1; i <= 40; i++) {
         rowData.push(alumno[`element${i}`]);

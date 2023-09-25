@@ -33,7 +33,7 @@ export default function Home() {
       localStorage.setItem("token", token);
       // Redirige al usuario después de un inicio de sesión exitoso
       window.location.href =
-        "https://master--cheery-dieffenbachia-258984.netlify.app//admin/all";
+        "https://master--cheery-dieffenbachia-258984.netlify.app/admin/all";
       onOpenChange(false);
     } catch (error) {
       setError("Credenciales incorrectas");
