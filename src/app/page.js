@@ -40,12 +40,8 @@ export default function Home() {
       localStorage.setItem("token", token);
       setToken(token);
       // Redirige al usuario después de un inicio de sesión exitoso
-<<<<<<< HEAD
       window.location.href =
         "https://master--cheery-dieffenbachia-258984.netlify.app/admin/all";
-=======
-      window.location.href = "/admin/all";
->>>>>>> f1ab57015526fc58a9779320f602d4942eabb36b
       onOpenChange(false);
     } catch (error) {
       setError("Credenciales incorrectas");
