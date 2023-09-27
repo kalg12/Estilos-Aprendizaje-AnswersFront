@@ -11,9 +11,9 @@
 [[redirects]]
   from = "/admin/alumnos-detalles/:curp"
   to = "/admin/alumnos-detalles/:curp"
-  status = 301
+  status = 200
 
 [[redirects]]
   from = "/resultados/:curp"
   to = "/resultados/:curp"
-  status = 301
+  status = 200
