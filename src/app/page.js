@@ -16,11 +16,13 @@ import {
   Input,
 } from "@nextui-org/react";
 import Link from "next/link";
+import { useRouter } from "next/navigation"; // Importa useRouter
 import { MailIcon } from "@/components/MailIcon";
 import { LockIcon } from "@/components/LockIcon";
 import { login } from "@/services/authService";
 
 export default function Home() {
+  const router = useRouter(); // Inicializa useRouter
   const currentYear = new Date().getFullYear();
   const { isOpen, onOpen, onOpenChange } = useDisclosure();
   const [username, setUsername] = useState("");
@@ -40,8 +42,7 @@ export default function Home() {
       localStorage.setItem("token", token);
       setToken(token);
       // Redirige al usuario después de un inicio de sesión exitoso
-      window.location.href =
-        "https://master--cheery-dieffenbachia-258984.netlify.app/admin/all";
+      router.push("/admin/all"); // Usa router.push en lugar de window.location.href
       onOpenChange(false);
     } catch (error) {
       setError("Credenciales incorrectas");
