@@ -58,7 +58,7 @@ const AllPage = () => {
     const workbook = new ExcelJS.Workbook();
     const worksheet = workbook.addWorksheet("Alumnos");
 
-    worksheet.getColumn("A").width = 25; // Ancho para ID
+    worksheet.getColumn("A").width = 26; // Ancho para ID
     worksheet.getColumn("B").width = 35; // Ancho para Nombre
 
     // Encabezados
