@@ -13,14 +13,8 @@ import {
 } from "@nextui-org/react";
 import LayoutPublic from "./LayoutPublic";
 import { getAlumnoByCurpPublic } from "@/services/api";
-import {
-  Page,
-  Text,
-  View,
-  Document,
-  PDFDownloadLink,
-  StyleSheet,
-} from "@react-pdf/renderer";
+import jsPDF from "jspdf";
+import "jspdf-autotable";
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
@@ -114,83 +108,63 @@ const AlumnosPublicPage = () => {
     }, 0);
   };
 
-  const styles = StyleSheet.create({
-    page: { flexDirection: "row", backgroundColor: "#2371DE" },
-    section: {
-      margin: 10,
-      padding: 10,
-      flexGrow: 1,
-      backgroundColor: "#E4E4E4",
-    },
-  });
+  const generatePDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(16);
+    doc.text("ESTILOS DE APRENDIZAJE - CETMAR 18", 20, 20);
+    doc.setFontSize(12);
+    doc.text(`Nombre: ${alumno.nombre} ${alumno.apellido}`, 20, 30);
+    doc.text(`CURP: ${alumno.curp}`, 20, 40);
+    doc.text(`Grupo: ${alumno.grupo}`, 20, 50);
+    doc.text(`Estilo de Aprendizaje: ${alumno.estilo_aprendizaje}`, 20, 60);
 
-  const MyDocument = () => (
-    <Document>
-      <Page size="A4" style={styles.page}>
-        <View style={styles.section}>
-          <Text
-            style={{
-              textAlign: "center",
-              fontSize: 18,
-              fontWeight: "bold",
-              marginBottom: 10,
-            }}
-          >
-            ESTILOS DE APRENDIZAJE - CETMAR 18
-          </Text>
-          <Text style={{ fontSize: 13, textAlign: "center", margin: 1 }}>
-            Nombre: {alumno.nombre} {alumno.apellido}
-          </Text>
-          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.5 }}>
-            CURP: {alumno.curp}
-          </Text>
-          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.5 }}>
-            Grupo: {alumno.grupo}
-          </Text>
-          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.7 }}>
-            Estilo de Aprendizaje: {alumno.estilo_aprendizaje}
-          </Text>
-        </View>
-      </Page>
-    </Document>
-  );
+    const tableColumn = ["Pregunta", "Visual", "Auditivo", "Kinestésico"];
+    const tableRows = patronesRespuestas.map((patron, i) => {
+      const respuestaVisual =
+        alumno[`element${i + 1}`] === patron[0] ? "X" : "";
+      const respuestaAuditivo =
+        alumno[`element${i + 1}`] === patron[1] ? "X" : "";
+      const respuestaKinestesico =
+        alumno[`element${i + 1}`] === patron[2] ? "X" : "";
+      return [i + 1, respuestaVisual, respuestaAuditivo, respuestaKinestesico];
+    });
+
+    doc.autoTable({
+      head: [tableColumn],
+      body: tableRows,
+      startY: 70,
+    });
+
+    doc.save(`estilo_aprendizaje_${curpalumno}.pdf`);
+  };
 
   return (
     <LayoutPublic>
       <div className="flex flex-col items-center justify-center h-full">
         {alumno ? (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 mt-4">
-            <div className="flex flex-col sticky top-16 bg-white p-4 rounded-lg shadow max-h-[250px] overflow-y-auto">
-              <p className="text-2xl font-semibold mb-4 text-center">
-                Información del Alumno
-              </p>
-              <p>
-                <strong>CURP:</strong> {alumno.curp}
-              </p>
-              <p>
-                <strong>Nombre:</strong> {alumno.nombre} {alumno.apellido}
-              </p>
-              <p>
-                <strong>Grupo:</strong> {alumno.grupo}
-              </p>
-              <p>
-                <strong>Estilo de Aprendizaje:</strong>{" "}
-                {alumno.estilo_aprendizaje}
-              </p>
-              <PDFDownloadLink
-                document={<MyDocument />}
-                fileName={`estilo_aprendizaje_${curpalumno}.pdf`}
-              >
-                <Button
-                  className="mt-4 align-center"
-                  variant="flat"
-                  color="danger"
-                >
-                  Descargar PDF
-                </Button>
-              </PDFDownloadLink>
-            </div>
-            <div className="bg-white p-4 rounded-lg shadow">
+            <div
+              id="pdfContent"
+              className="bg-white p-4 rounded-lg shadow w-full max-w-screen-md"
+            >
+              <div className="flex flex-col items-center mb-4">
+                <p className="text-2xl font-semibold mb-4 text-center">
+                  Información del Alumno
+                </p>
+                <p>
+                  <strong>CURP:</strong> {alumno.curp}
+                </p>
+                <p>
+                  <strong>Nombre:</strong> {alumno.nombre} {alumno.apellido}
+                </p>
+                <p>
+                  <strong>Grupo:</strong> {alumno.grupo}
+                </p>
+                <p>
+                  <strong>Estilo de Aprendizaje:</strong>{" "}
+                  {alumno.estilo_aprendizaje}
+                </p>
+              </div>
               <p className="text-2xl font-semibold mb-4 text-center">
                 Respuestas del Alumno
               </p>
@@ -229,6 +203,14 @@ const AlumnosPublicPage = () => {
                 </div>
               </div>
             </div>
+            <Button
+              className="mt-4 align-center"
+              variant="flat"
+              color="danger"
+              onClick={generatePDF}
+            >
+              Descargar PDF
+            </Button>
           </div>
         ) : (
           <div className="flex items-center justify-center h-full">
