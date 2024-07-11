@@ -24,7 +24,7 @@ import {
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
-  const { curpalumno } = router.query; // Obtener curpalumno directamente de router.query
+  const { curpalumno } = router.query;
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
