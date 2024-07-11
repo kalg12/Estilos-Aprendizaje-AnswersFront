@@ -24,128 +24,75 @@ import {
 
 const AlumnosPublicPage = () => {
   const router = useRouter();
-  const [curpalumno, setCurpAlumno] = useState("CURP_ALUMNO");
+  const { curpalumno } = router.query; // Obtener curpalumno directamente de router.query
   const [alumno, setAlumno] = useState(null);
 
   useEffect(() => {
-    if (router.query.curpalumno) {
-      setCurpAlumno(router.query.curpalumno);
-    }
     const getAlumno = async () => {
-      const alumnoData = await getAlumnoByCurpPublic(router.query.curpalumno);
-      if (alumnoData) {
-        setAlumno(alumnoData);
+      if (curpalumno) {
+        const alumnoData = await getAlumnoByCurpPublic(curpalumno);
+        if (alumnoData) {
+          setAlumno(alumnoData);
+        }
       }
     };
     getAlumno();
-  }, [router.query.curpalumno]);
-
-  const handleSearch = async () => {
-    if (searchCurp) {
-      setSearching(true);
-      const alumnoData = await getAlumnoByCurpPublic(searchCurp);
-      if (alumnoData) {
-        setAlumno(alumnoData);
-      }
-      setSearching(false);
-    }
-  };
+  }, [curpalumno]);
 
   const patronesRespuestas = [
-    /* 1 */
     ["B", "A", "C"],
-    /* 2 */
     ["A", "C", "B"],
-    /* 3 */
     ["B", "A", "C"],
-    /* 4 */
     ["C", "B", "A"],
-    /* 5 */
     ["C", "B", "A"],
-    /* 6 */
     ["B", "A", "C"],
-    /* 7 */
     ["A", "B", "C"],
-    /* 8 */
     ["B", "A", "C"],
-    /* 9 */
     ["A", "C", "B"],
-    /* 10 */
     ["C", "B", "A"],
-    /* 11 */
     ["B", "A", "C"],
-    /* 12 */
     ["B", "C", "A"],
-    /* 13 */
     ["C", "A", "B"],
-    /* 14 */
     ["A", "B", "C"],
-    /* 15 */
     ["B", "A", "C"],
-    /* 16 */
     ["A", "C", "B"],
-    /* 17 */
     ["C", "B", "A"],
-    /* 18 */
     ["C", "A", "B"],
-    /* 19 */
     ["A", "B", "C"],
-    /* 20 */
     ["A", "C", "B"],
-    /* 21 */
     ["B", "C", "A"],
-    /* 22 */
     ["C", "A", "B"],
-    /* 23 */
     ["A", "B", "C"],
-    /* 24 */
     ["B", "A", "C"],
-    /* 25 */
     ["A", "B", "C"],
-    /* 26 */
     ["C", "B", "A"],
-    /* 27 */
     ["B", "A", "C"],
-    /* 28 */
     ["C", "B", "A"],
-    /* 29 */
     ["B", "C", "A"],
-    /* 30 */
     ["C", "B", "A"],
-    /* 31 */
     ["B", "A", "C"],
-    /* 32 */
     ["C", "A", "B"],
-    /* 33 */
     ["A", "C", "B"],
-    /* 34 */
     ["B", "A", "C"],
-    /* 35 */
     ["B", "C", "A"],
-    /* 36 */
     ["A", "C", "B"],
-    /* 37 */
     ["A", "B", "C"],
-    /* 38 */
     ["B", "C", "A"],
-    /* 39 */
     ["B", "C", "A"],
-    /* 40 */
     ["C", "A", "B"],
   ];
 
   const renderRespuestas = () => {
     if (!alumno) return null;
 
-    const respuestasAlumno = [];
-    for (let i = 0; i < patronesRespuestas.length; i++) {
+    return patronesRespuestas.map((patron, i) => {
       const respuestaVisual =
-        alumno[`element${i + 1}`] === patronesRespuestas[i][0] ? "X" : "";
+        alumno[`element${i + 1}`] === patron[0] ? "X" : "";
       const respuestaAuditivo =
-        alumno[`element${i + 1}`] === patronesRespuestas[i][1] ? "X" : "";
+        alumno[`element${i + 1}`] === patron[1] ? "X" : "";
       const respuestaKinestesico =
-        alumno[`element${i + 1}`] === patronesRespuestas[i][2] ? "X" : "";
-      respuestasAlumno.push(
+        alumno[`element${i + 1}`] === patron[2] ? "X" : "";
+      return (
         <TableRow key={i + 1}>
           <TableCell>{i + 1}</TableCell>
           <TableCell>{respuestaVisual}</TableCell>
@@ -153,28 +100,22 @@ const AlumnosPublicPage = () => {
           <TableCell>{respuestaKinestesico}</TableCell>
         </TableRow>
       );
-    }
-    return respuestasAlumno;
+    });
   };
 
   const countEstilo = (estilo) => {
     if (!alumno) return 0;
 
-    let count = 0;
-    for (let i = 0; i < patronesRespuestas.length; i++) {
-      if (alumno[`element${i + 1}`] === patronesRespuestas[i][estilo]) {
+    return patronesRespuestas.reduce((count, patron, i) => {
+      if (alumno[`element${i + 1}`] === patron[estilo]) {
         count++;
       }
-    }
-    return count;
+      return count;
+    }, 0);
   };
 
-  // Create styles
   const styles = StyleSheet.create({
-    page: {
-      flexDirection: "row",
-      backgroundColor: "#2371DE",
-    },
+    page: { flexDirection: "row", backgroundColor: "#2371DE" },
     section: {
       margin: 10,
       padding: 10,
@@ -183,7 +124,6 @@ const AlumnosPublicPage = () => {
     },
   });
 
-  // Create Document Component
   const MyDocument = () => (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -198,40 +138,16 @@ const AlumnosPublicPage = () => {
           >
             ESTILOS DE APRENDIZAJE - CETMAR 18
           </Text>
-          <Text
-            style={{
-              fontSize: 13,
-              textAlign: "center",
-              margin: 1,
-            }}
-          >
+          <Text style={{ fontSize: 13, textAlign: "center", margin: 1 }}>
             Nombre: {alumno.nombre} {alumno.apellido}
           </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              textAlign: "center",
-              margin: 0.5,
-            }}
-          >
+          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.5 }}>
             CURP: {alumno.curp}
           </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              textAlign: "center",
-              margin: 0.5,
-            }}
-          >
+          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.5 }}>
             Grupo: {alumno.grupo}
           </Text>
-          <Text
-            style={{
-              fontSize: 12,
-              textAlign: "center",
-              margin: 0.7,
-            }}
-          >
+          <Text style={{ fontSize: 12, textAlign: "center", margin: 0.7 }}>
             Estilo de Aprendizaje: {alumno.estilo_aprendizaje}
           </Text>
         </View>
@@ -295,7 +211,6 @@ const AlumnosPublicPage = () => {
                 </TableHeader>
                 <TableBody>{renderRespuestas()}</TableBody>
               </Table>
-              {/* Contador de estilos */}
               <div className="flex justify-center mt-4">
                 <div className="mr-4">
                   <p className="text-lg font-semibold">
@@ -316,7 +231,7 @@ const AlumnosPublicPage = () => {
             </div>
           </div>
         ) : (
-          <div className="flex items-center justify-center h-full ">
+          <div className="flex items-center justify-center h-full">
             <Spinner label="Cargando" color="primary" labelColor="primary" />
           </div>
         )}
