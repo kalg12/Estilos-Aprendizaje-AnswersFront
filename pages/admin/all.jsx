@@ -16,16 +16,34 @@ const ExcelJS = require("exceljs");
 
 const AllPage = () => {
   const [alumnos, setAlumnos] = useState([]);
+  const [generaciones, setGeneraciones] = useState([]); // Nueva variable de estado para las generaciones
+  const [generacionSeleccionada, setGeneracionSeleccionada] = useState(""); // Nueva variable de estado para la generación seleccionada
 
   useEffect(() => {
     async function fetchAlumnos() {
       const alumnosData = await getAllAlumnos();
       if (alumnosData) {
         setAlumnos(alumnosData);
+
+        // Extraer las generaciones únicas de los datos de los alumnos
+        const generacionesUnicas = [
+          ...new Set(alumnosData.map((alumno) => alumno.generacion)),
+        ];
+        setGeneraciones(generacionesUnicas);
       }
     }
     fetchAlumnos();
   }, []);
+
+  const handleGeneracionChange = (e) => {
+    setGeneracionSeleccionada(e.target.value);
+  };
+
+  const alumnosFiltrados = alumnos.filter((alumno) =>
+    generacionSeleccionada
+      ? alumno.generacion === generacionSeleccionada && alumno.generacion !== ""
+      : alumno.generacion !== ""
+  );
 
   const renderActions = (alumno) => (
     <div className="flex justify-end items-center gap-2">
@@ -39,14 +57,14 @@ const AllPage = () => {
   );
 
   const countEstiloAprendizaje = (estilo) => {
-    return alumnos.filter(
+    return alumnosFiltrados.filter(
       (alumno) =>
         alumno.estilo_aprendizaje.toLowerCase() === estilo.toLowerCase()
     ).length;
   };
 
   const countDominioDosEstilos = () => {
-    return alumnos.filter(
+    return alumnosFiltrados.filter(
       (alumno) =>
         alumno.estilo_aprendizaje.toLowerCase().includes("visual") &&
         (alumno.estilo_aprendizaje.toLowerCase().includes("auditivo") ||
@@ -69,12 +87,12 @@ const AllPage = () => {
     worksheet.addRow(headers);
 
     // Datos de los alumnos
-    alumnos.forEach((alumno) => {
+    alumnosFiltrados.forEach((alumno) => {
       const rowData = [
         alumno.curp,
         `${alumno.nombre} ${alumno.apellido}`,
         alumno.grupo,
-        alumno.estilo_aprendizaje, // Agregado de estilo de aprendizaje
+        alumno.estilo_aprendizaje,
       ];
       for (let i = 1; i <= 40; i++) {
         rowData.push(alumno[`element${i}`]);
@@ -108,6 +126,23 @@ const AllPage = () => {
         <h2 className="text-2xl font-semibold mb-4">
           Estadísticas de Estilos de Aprendizaje
         </h2>
+        <div className="mb-4">
+          <label htmlFor="generacion" className="mr-2">
+            Filtrar por Generación:
+          </label>
+          <select
+            id="generacion"
+            value={generacionSeleccionada}
+            onChange={handleGeneracionChange}
+          >
+            <option value="">Todas</option>
+            {generaciones.map((gen) => (
+              <option key={gen} value={gen}>
+                {gen}
+              </option>
+            ))}
+          </select>
+        </div>
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-primary-light p-4 rounded-lg text-center">
             <p className="text-primary-dark font-medium mb-1">
@@ -141,7 +176,7 @@ const AllPage = () => {
         </div>
       </div>
 
-      {alumnos.length > 0 ? (
+      {alumnosFiltrados.length > 0 ? (
         <Table aria-label="Tabla de Alumnos">
           <TableHeader>
             <TableColumn key="nombre" align="center">
@@ -168,12 +203,15 @@ const AllPage = () => {
             <TableColumn key="estilo_aprendizaje" align="center">
               Estilo de Aprendizaje
             </TableColumn>
+            <TableColumn key="generacion" align="center">
+              Generación
+            </TableColumn>
             <TableColumn key="actions" align="center">
               Acciones
             </TableColumn>
           </TableHeader>
-          <TableBody items={alumnos}>
-            {(alumno, index) => (
+          <TableBody items={alumnosFiltrados}>
+            {(alumno) => (
               <TableRow key={alumno.curp}>
                 <TableCell>{alumno.nombre}</TableCell>
                 <TableCell>{alumno.apellido}</TableCell>
@@ -183,6 +221,7 @@ const AllPage = () => {
                 <TableCell>{alumno.auditivo}</TableCell>
                 <TableCell>{alumno.kinestesico}</TableCell>
                 <TableCell>{alumno.estilo_aprendizaje}</TableCell>
+                <TableCell>{alumno.generacion}</TableCell>
                 <TableCell>{renderActions(alumno)}</TableCell>
               </TableRow>
             )}
