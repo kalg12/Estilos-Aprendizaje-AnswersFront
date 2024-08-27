@@ -25,7 +25,7 @@ const Resultados = () => {
     try {
       const alumnoData = await getAlumnoByCurpPublic(curp);
       if (alumnoData) {
-        window.location.href = `http://localhost:3000/resultados/${curp}`;
+        window.location.href = `https://estilos-aprendizaje-front.vercel.app//resultados/${curp}`;
       } else {
         setError(
           "CURP no encontrada. Por favor, verifica y vuelve a intentar."
