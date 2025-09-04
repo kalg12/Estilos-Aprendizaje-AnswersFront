@@ -31,5 +31,8 @@
   },
   "devDependencies": {
     "@netlify/plugin-nextjs": "^4.40.1"
+  },
+  "engines": {
+    "node": "22.x"
   }
 }
