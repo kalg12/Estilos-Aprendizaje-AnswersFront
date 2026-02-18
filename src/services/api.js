@@ -1,7 +1,12 @@
 import axios from "axios";
 import { getToken } from "./authService";
 
+//Producción
+
 const API_BASE_URL = "https://estilos-aprendizaje-backend.onrender.com/api";
+
+//Desarrollo
+/* const API_BASE_URL = "http://localhost:4000/api"; */
 
 // Función para obtener todos los alumnos
 export const getAllAlumnos = async () => {

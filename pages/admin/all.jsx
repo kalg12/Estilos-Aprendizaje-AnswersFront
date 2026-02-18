@@ -288,8 +288,20 @@ const AllPage = () => {
       doc.addPage();
     }
 
-    doc.setFontSize(16);
-    doc.text("Reporte de Alumno", 20, 18);
+    const pageWidth = doc.internal.pageSize.getWidth();
+    const pageHeight = doc.internal.pageSize.getHeight();
+
+    // Encabezado elegante
+    doc.setFillColor(31, 60, 136);
+    doc.rect(0, 10, 210, 16, "F");
+    doc.setTextColor(255, 255, 255);
+    doc.setFontSize(15);
+    doc.setFont(undefined, "bold");
+    doc.text("Reporte de Alumno", pageWidth / 2, 21, { align: "center" });
+    doc.setFontSize(9);
+    doc.text("Estilos de Aprendizaje", pageWidth - 20, 21, { align: "right" });
+    doc.setTextColor(0, 0, 0);
+    doc.setFont(undefined, "normal");
 
     doc.setFontSize(11);
     const infoRows = [
@@ -301,47 +313,125 @@ const AllPage = () => {
       ["Estilo de Aprendizaje:", alumno.estilo_aprendizaje],
     ];
 
-    let y = 28;
+    let y = 34;
+    const infoLabelX = pageWidth / 2 - 55;
+    const infoValueX = pageWidth / 2 - 5;
     infoRows.forEach(([label, value]) => {
       doc.setFont(undefined, "bold");
-      doc.text(label, 20, y);
+      doc.text(label, infoLabelX, y);
       doc.setFont(undefined, "normal");
-      doc.text(String(value || ""), 70, y);
+      doc.text(String(value || ""), infoValueX, y);
       y += 6;
     });
 
     y += 6;
     doc.setFont(undefined, "bold");
     doc.setFontSize(12);
-    doc.text("Respuestas del Alumno", 20, y);
+    doc.text("Respuestas del Alumno", pageWidth / 2, y, { align: "center" });
 
     y += 8;
-    doc.setFontSize(10);
+    const colWidths = [28, 28, 32, 42];
+    const headerHeight = 6;
+    const tableWidth = colWidths.reduce((sum, w) => sum + w, 0);
+    const tableX = (pageWidth - tableWidth) / 2;
+
+    const footerY = pageHeight - 24;
+    const countY = pageHeight - 16;
+    const badgeY = pageHeight - 38;
+    const tableBottom = badgeY - 12;
+    const availableRowsHeight = tableBottom - (y + headerHeight);
+    const rowHeight = Math.max(
+      3.4,
+      Math.min(5, availableRowsHeight / patronesRespuestas.length),
+    );
+    const tableHeight = headerHeight + rowHeight * patronesRespuestas.length;
+
+    // Encabezado de tabla con color
+    doc.setFillColor(227, 235, 248);
+    doc.rect(tableX, y, tableWidth, headerHeight, "F");
+    doc.setDrawColor(180, 180, 180);
+    doc.rect(tableX, y, tableWidth, tableHeight);
+
+    doc.setFontSize(9.5);
     doc.setFont(undefined, "bold");
-    doc.text("Pregunta", 20, y);
-    doc.text("Visual", 60, y);
-    doc.text("Auditivo", 95, y);
-    doc.text("Kinestésico", 135, y);
+    const colStarts = [
+      tableX,
+      tableX + colWidths[0],
+      tableX + colWidths[0] + colWidths[1],
+      tableX + colWidths[0] + colWidths[1] + colWidths[2],
+    ];
+    const colCenters = [
+      colStarts[0] + colWidths[0] / 2,
+      colStarts[1] + colWidths[1] / 2,
+      colStarts[2] + colWidths[2] / 2,
+      colStarts[3] + colWidths[3] / 2,
+    ];
+
+    const headerY = y + 4.2;
+    doc.text("Pregunta", colCenters[0], headerY, { align: "center" });
+    doc.text("Visual", colCenters[1], headerY, { align: "center" });
+    doc.text("Auditivo", colCenters[2], headerY, { align: "center" });
+    doc.text("Kinestésico", colCenters[3], headerY, { align: "center" });
 
     doc.setFont(undefined, "normal");
-    const rowHeight = 5;
+    doc.setFontSize(9);
     for (let i = 0; i < patronesRespuestas.length; i++) {
-      const rowY = y + rowHeight * (i + 1);
-      doc.text(String(i + 1), 20, rowY);
-      doc.text(getRespuestaMark(alumno, i, 0), 60, rowY);
-      doc.text(getRespuestaMark(alumno, i, 1), 95, rowY);
-      doc.text(getRespuestaMark(alumno, i, 2), 135, rowY);
+      const rowY = y + headerHeight + rowHeight * (i + 1) - 1;
+      doc.text(String(i + 1), colCenters[0], rowY, { align: "center" });
+      doc.text(getRespuestaMark(alumno, i, 0), colCenters[1], rowY, {
+        align: "center",
+      });
+      doc.text(getRespuestaMark(alumno, i, 1), colCenters[2], rowY, {
+        align: "center",
+      });
+      doc.text(getRespuestaMark(alumno, i, 2), colCenters[3], rowY, {
+        align: "center",
+      });
+    }
+
+    // Líneas verticales
+    let lineX = tableX;
+    doc.setDrawColor(200, 200, 200);
+    for (let i = 0; i < colWidths.length - 1; i++) {
+      lineX += colWidths[i];
+      doc.line(lineX, y, lineX, y + tableHeight);
+    }
+
+    // Líneas horizontales
+    for (let i = 0; i <= patronesRespuestas.length; i++) {
+      const lineY = y + headerHeight + rowHeight * i;
+      doc.line(tableX, lineY, tableX + tableWidth, lineY);
     }
 
     const visualCount = countEstiloByIndex(alumno, 0);
     const auditivoCount = countEstiloByIndex(alumno, 1);
     const kinestesicoCount = countEstiloByIndex(alumno, 2);
-    const footerY = y + rowHeight * (patronesRespuestas.length + 2);
+
+    doc.setDrawColor(210, 210, 210);
+    doc.line(tableX, footerY - 6, tableX + tableWidth, footerY - 6);
 
     doc.setFont(undefined, "bold");
-    doc.text(`Visual: ${visualCount}`, 20, footerY);
-    doc.text(`Auditivo: ${auditivoCount}`, 70, footerY);
-    doc.text(`Kinestésico: ${kinestesicoCount}`, 130, footerY);
+    doc.setFontSize(10);
+    doc.text("Visual", colCenters[1], footerY, { align: "center" });
+    doc.text("Auditivo", colCenters[2], footerY, { align: "center" });
+    doc.text("Kinestésico", colCenters[3], footerY, { align: "center" });
+
+    doc.setFontSize(11);
+    doc.text(String(visualCount), colCenters[1], countY, { align: "center" });
+    doc.text(String(auditivoCount), colCenters[2], countY, {
+      align: "center",
+    });
+    doc.text(String(kinestesicoCount), colCenters[3], countY, {
+      align: "center",
+    });
+
+    // Resaltar estilo principal encima de los totales
+    const badgeText = `Estilo principal: ${alumno.estilo_aprendizaje}`;
+    doc.setFillColor(240, 245, 255);
+    doc.roundedRect(tableX, badgeY - 5, tableWidth, 10, 2, 2, "F");
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(11);
+    doc.text(badgeText, pageWidth / 2, badgeY + 2, { align: "center" });
   };
 
   const downloadAllPdf = async () => {
