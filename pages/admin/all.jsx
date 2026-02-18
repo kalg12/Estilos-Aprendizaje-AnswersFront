@@ -11,14 +11,19 @@ import {
 } from "@nextui-org/react";
 import { getAllAlumnos } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
-import Link from "next/link";
+import { useRouter } from "next/router";
 import { jsPDF } from "jspdf";
 const ExcelJS = require("exceljs");
 
 const AllPage = () => {
+  const router = useRouter();
   const [alumnos, setAlumnos] = useState([]);
   const [generaciones, setGeneraciones] = useState([]); // Nueva variable de estado para las generaciones
   const [generacionSeleccionada, setGeneracionSeleccionada] = useState(""); // Nueva variable de estado para la generación seleccionada
+  const [actionLoading, setActionLoading] = useState({
+    type: null,
+    curp: null,
+  });
 
   useEffect(() => {
     async function fetchAlumnos() {
@@ -40,22 +45,66 @@ const AllPage = () => {
     setGeneracionSeleccionada(e.target.value);
   };
 
+  const waitForRender = () =>
+    new Promise((resolve) =>
+      requestAnimationFrame(() => requestAnimationFrame(resolve)),
+    );
+
   const alumnosFiltrados = alumnos.filter((alumno) =>
     generacionSeleccionada
       ? alumno.generacion === generacionSeleccionada && alumno.generacion !== ""
       : alumno.generacion !== "",
   );
 
-  const renderActions = (alumno) => (
-    <div className="flex justify-end items-center gap-2">
-      <Button variant="flat" color="primary">
-        <Link href={`/admin/alumno-detalles/${alumno.curp}`}>Ver detalles</Link>
-      </Button>
-      <Button variant="flat" color="danger" onClick={() => downloadPDF(alumno)}>
-        Descargar PDF
-      </Button>
-    </div>
-  );
+  const handleViewDetails = async (curp) => {
+    setActionLoading({ type: "details", curp });
+    try {
+      await waitForRender();
+      await router.push(`/admin/alumno-detalles/${curp}`);
+    } finally {
+      setActionLoading({ type: null, curp: null });
+    }
+  };
+
+  const handleDownloadPDF = async (alumno) => {
+    setActionLoading({ type: "pdf", curp: alumno.curp });
+    try {
+      await waitForRender();
+      downloadPDF(alumno);
+    } finally {
+      setActionLoading({ type: null, curp: null });
+    }
+  };
+
+  const renderActions = (alumno) => {
+    const isDetailsLoading =
+      actionLoading.type === "details" && actionLoading.curp === alumno.curp;
+    const isPdfLoading =
+      actionLoading.type === "pdf" && actionLoading.curp === alumno.curp;
+
+    return (
+      <div className="flex justify-end items-center gap-2">
+        <Button
+          variant="flat"
+          color="primary"
+          isLoading={isDetailsLoading}
+          isDisabled={isPdfLoading}
+          onClick={() => handleViewDetails(alumno.curp)}
+        >
+          Ver detalles
+        </Button>
+        <Button
+          variant="flat"
+          color="danger"
+          isLoading={isPdfLoading}
+          isDisabled={isDetailsLoading}
+          onClick={() => handleDownloadPDF(alumno)}
+        >
+          Descargar PDF
+        </Button>
+      </div>
+    );
+  };
 
   const countEstiloAprendizaje = (estilo) => {
     return alumnosFiltrados.filter(
