@@ -81,6 +81,7 @@ const AllPage = () => {
       actionLoading.type === "details" && actionLoading.curp === alumno.curp;
     const isPdfLoading =
       actionLoading.type === "pdf" && actionLoading.curp === alumno.curp;
+    const isBulkPdfLoading = actionLoading.type === "bulk-pdf";
 
     return (
       <div className="flex justify-end items-center gap-2">
@@ -88,7 +89,7 @@ const AllPage = () => {
           variant="flat"
           color="primary"
           isLoading={isDetailsLoading}
-          isDisabled={isPdfLoading}
+          isDisabled={isPdfLoading || isBulkPdfLoading}
           onClick={() => handleViewDetails(alumno.curp)}
         >
           Ver detalles
@@ -97,7 +98,7 @@ const AllPage = () => {
           variant="flat"
           color="danger"
           isLoading={isPdfLoading}
-          isDisabled={isDetailsLoading}
+          isDisabled={isDetailsLoading || isBulkPdfLoading}
           onClick={() => handleDownloadPDF(alumno)}
         >
           Descargar PDF
@@ -120,6 +121,64 @@ const AllPage = () => {
         (alumno.estilo_aprendizaje.toLowerCase().includes("auditivo") ||
           alumno.estilo_aprendizaje.toLowerCase().includes("kinestesico")),
     ).length;
+  };
+
+  const patronesRespuestas = [
+    ["B", "A", "C"],
+    ["A", "C", "B"],
+    ["B", "A", "C"],
+    ["C", "B", "A"],
+    ["C", "B", "A"],
+    ["B", "A", "C"],
+    ["A", "B", "C"],
+    ["B", "A", "C"],
+    ["A", "C", "B"],
+    ["C", "B", "A"],
+    ["B", "A", "C"],
+    ["B", "C", "A"],
+    ["C", "A", "B"],
+    ["A", "B", "C"],
+    ["B", "A", "C"],
+    ["A", "C", "B"],
+    ["C", "B", "A"],
+    ["C", "A", "B"],
+    ["A", "B", "C"],
+    ["A", "C", "B"],
+    ["B", "C", "A"],
+    ["C", "A", "B"],
+    ["A", "B", "C"],
+    ["B", "A", "C"],
+    ["A", "B", "C"],
+    ["C", "B", "A"],
+    ["B", "A", "C"],
+    ["C", "B", "A"],
+    ["B", "C", "A"],
+    ["C", "B", "A"],
+    ["B", "A", "C"],
+    ["C", "A", "B"],
+    ["A", "C", "B"],
+    ["B", "A", "C"],
+    ["B", "C", "A"],
+    ["A", "C", "B"],
+    ["A", "B", "C"],
+    ["B", "C", "A"],
+    ["B", "C", "A"],
+    ["C", "A", "B"],
+  ];
+
+  const getRespuestaMark = (alumno, index, colIndex) =>
+    alumno[`element${index + 1}`] === patronesRespuestas[index][colIndex]
+      ? "X"
+      : "";
+
+  const countEstiloByIndex = (alumno, colIndex) => {
+    let count = 0;
+    for (let i = 0; i < patronesRespuestas.length; i++) {
+      if (alumno[`element${i + 1}`] === patronesRespuestas[i][colIndex]) {
+        count++;
+      }
+    }
+    return count;
   };
 
   const downloadExcel = async () => {
@@ -224,6 +283,81 @@ const AllPage = () => {
     doc.save(`${alumno.nombre}_${alumno.apellido}.pdf`);
   };
 
+  const renderAlumnoToPdf = (doc, alumno, pageIndex) => {
+    if (pageIndex > 0) {
+      doc.addPage();
+    }
+
+    doc.setFontSize(16);
+    doc.text("Reporte de Alumno", 20, 18);
+
+    doc.setFontSize(11);
+    const infoRows = [
+      ["Nombre:", `${alumno.nombre} ${alumno.apellido}`],
+      ["CURP:", alumno.curp],
+      ["Grupo:", alumno.grupo],
+      ["Email:", alumno.email],
+      ["Generación:", alumno.generacion],
+      ["Estilo de Aprendizaje:", alumno.estilo_aprendizaje],
+    ];
+
+    let y = 28;
+    infoRows.forEach(([label, value]) => {
+      doc.setFont(undefined, "bold");
+      doc.text(label, 20, y);
+      doc.setFont(undefined, "normal");
+      doc.text(String(value || ""), 70, y);
+      y += 6;
+    });
+
+    y += 6;
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(12);
+    doc.text("Respuestas del Alumno", 20, y);
+
+    y += 8;
+    doc.setFontSize(10);
+    doc.setFont(undefined, "bold");
+    doc.text("Pregunta", 20, y);
+    doc.text("Visual", 60, y);
+    doc.text("Auditivo", 95, y);
+    doc.text("Kinestésico", 135, y);
+
+    doc.setFont(undefined, "normal");
+    const rowHeight = 5;
+    for (let i = 0; i < patronesRespuestas.length; i++) {
+      const rowY = y + rowHeight * (i + 1);
+      doc.text(String(i + 1), 20, rowY);
+      doc.text(getRespuestaMark(alumno, i, 0), 60, rowY);
+      doc.text(getRespuestaMark(alumno, i, 1), 95, rowY);
+      doc.text(getRespuestaMark(alumno, i, 2), 135, rowY);
+    }
+
+    const visualCount = countEstiloByIndex(alumno, 0);
+    const auditivoCount = countEstiloByIndex(alumno, 1);
+    const kinestesicoCount = countEstiloByIndex(alumno, 2);
+    const footerY = y + rowHeight * (patronesRespuestas.length + 2);
+
+    doc.setFont(undefined, "bold");
+    doc.text(`Visual: ${visualCount}`, 20, footerY);
+    doc.text(`Auditivo: ${auditivoCount}`, 70, footerY);
+    doc.text(`Kinestésico: ${kinestesicoCount}`, 130, footerY);
+  };
+
+  const downloadAllPdf = async () => {
+    setActionLoading({ type: "bulk-pdf", curp: null });
+    try {
+      await waitForRender();
+      const doc = new jsPDF();
+      alumnosFiltrados.forEach((alumno, index) => {
+        renderAlumnoToPdf(doc, alumno, index);
+      });
+      doc.save("reporte_alumnos.pdf");
+    } finally {
+      setActionLoading({ type: null, curp: null });
+    }
+  };
+
   return (
     <LayoutAdmin>
       <div className="flex flex-col items-center justify-center h-full">
@@ -273,9 +407,16 @@ const AllPage = () => {
             <p className="text-lg">{countDominioDosEstilos()}</p>
           </div>
         </div>
-        <div className="mt-4 mb-4">
+        <div className="mt-4 mb-4 flex items-center gap-3">
           <Button color="success" onClick={downloadExcel}>
             Descargar Excel
+          </Button>
+          <Button
+            color="secondary"
+            isLoading={actionLoading.type === "bulk-pdf"}
+            onClick={downloadAllPdf}
+          >
+            Descargar PDF
           </Button>
         </div>
       </div>
