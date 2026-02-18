@@ -14,6 +14,7 @@ import {
   useDisclosure,
   Checkbox,
   Input,
+  Spinner,
 } from "@nextui-org/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation"; // Importa useRouter
@@ -29,6 +30,7 @@ export default function Home() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const [token, setToken] = useState("");
+  const [loading, setLoading] = useState(false);
 
   // Simulación de verificación de token
   useEffect(() => {
@@ -37,15 +39,18 @@ export default function Home() {
   }, []);
 
   const handleLogin = async () => {
+    setLoading(true);
+    setError("");
     try {
       const token = await login(username, password);
       localStorage.setItem("token", token);
       setToken(token);
-      // Redirige al usuario después de un inicio de sesión exitoso
-      router.push("/admin/all"); // Usa router.push en lugar de window.location.href
+      router.push("/admin/all");
       onOpenChange(false);
     } catch (error) {
       setError("Credenciales incorrectas");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -109,6 +114,7 @@ export default function Home() {
                     value={username}
                     onChange={(e) => setUsername(e.target.value)}
                     onKeyPress={handleKeyPress}
+                    isDisabled={loading}
                     endContent={
                       <MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }
@@ -121,6 +127,7 @@ export default function Home() {
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     onKeyPress={handleKeyPress}
+                    isDisabled={loading}
                     endContent={
                       <LockIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />
                     }
@@ -144,11 +151,12 @@ export default function Home() {
                     color="danger"
                     variant="flat"
                     onClick={() => onOpenChange(false)}
+                    isDisabled={loading}
                   >
                     Cerrar
                   </Button>
-                  <Button color="primary" onClick={handleLogin}>
-                    Iniciar Sesión
+                  <Button color="primary" onClick={handleLogin} isDisabled={loading}>
+                    {loading ? <Spinner size="sm" color="white" /> : "Iniciar Sesión"}
                   </Button>
                 </ModalFooter>
               </>
