@@ -19,13 +19,28 @@ const AlumnoDetallesPage = () => {
   const { curp } = router.query;
 
   const [alumno, setAlumno] = useState(null);
+  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     async function fetchAlumno() {
       if (curp) {
-        const alumnoData = await getAlumnoByCurp(curp); // Llamada correcta a la API
-        if (alumnoData) {
-          setAlumno(alumnoData);
+        try {
+          setLoading(true);
+          setError(null);
+          console.log("Buscando alumno con CURP:", curp);
+          const alumnoData = await getAlumnoByCurp(curp);
+          console.log("Datos recibidos:", alumnoData);
+          if (alumnoData) {
+            setAlumno(alumnoData);
+          } else {
+            setError("No se encontró el alumno");
+          }
+        } catch (err) {
+          console.error("Error al obtener alumno:", err);
+          setError(`Error: ${err.message || "Error desconocido"}`);
+        } finally {
+          setLoading(false);
         }
       }
     }
@@ -133,7 +148,7 @@ const AlumnoDetallesPage = () => {
           <TableCell>{respuestaVisual}</TableCell>
           <TableCell>{respuestaAuditivo}</TableCell>
           <TableCell>{respuestaKinestesico}</TableCell>
-        </TableRow>
+        </TableRow>,
       );
     }
     return respuestasAlumno;
@@ -161,7 +176,18 @@ const AlumnoDetallesPage = () => {
             </Link>
           </Button>
         </div>
-        {alumno ? (
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            <p className="font-bold">Error</p>
+            <p>{error}</p>
+          </div>
+        )}
+        {loading && (
+          <div className="flex items-center justify-center h-full">
+            <Spinner label="Cargando" color="primary" labelColor="primary" />
+          </div>
+        )}
+        {alumno && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
             <div className="bg-white p-4 rounded-lg shadow">
               <p className="text-2xl font-semibold mb-4 text-center">
@@ -221,10 +247,6 @@ const AlumnoDetallesPage = () => {
                 </div>
               </div>
             </div>
-          </div>
-        ) : (
-          <div className="flex items-center justify-center h-full">
-            <Spinner label="Cargando" color="primary" labelColor="primary" />
           </div>
         )}
       </div>
