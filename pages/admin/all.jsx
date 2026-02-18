@@ -12,6 +12,7 @@ import {
 import { getAllAlumnos } from "../../src/services/api";
 import LayoutAdmin from "./LayoutAdmin";
 import Link from "next/link";
+import { jsPDF } from "jspdf";
 const ExcelJS = require("exceljs");
 
 const AllPage = () => {
@@ -42,7 +43,7 @@ const AllPage = () => {
   const alumnosFiltrados = alumnos.filter((alumno) =>
     generacionSeleccionada
       ? alumno.generacion === generacionSeleccionada && alumno.generacion !== ""
-      : alumno.generacion !== ""
+      : alumno.generacion !== "",
   );
 
   const renderActions = (alumno) => (
@@ -50,7 +51,7 @@ const AllPage = () => {
       <Button variant="flat" color="primary">
         <Link href={`/admin/alumno-detalles/${alumno.curp}`}>Ver detalles</Link>
       </Button>
-      <Button variant="flat" color="danger">
+      <Button variant="flat" color="danger" onClick={() => downloadPDF(alumno)}>
         Descargar PDF
       </Button>
     </div>
@@ -59,7 +60,7 @@ const AllPage = () => {
   const countEstiloAprendizaje = (estilo) => {
     return alumnosFiltrados.filter(
       (alumno) =>
-        alumno.estilo_aprendizaje.toLowerCase() === estilo.toLowerCase()
+        alumno.estilo_aprendizaje.toLowerCase() === estilo.toLowerCase(),
     ).length;
   };
 
@@ -68,7 +69,7 @@ const AllPage = () => {
       (alumno) =>
         alumno.estilo_aprendizaje.toLowerCase().includes("visual") &&
         (alumno.estilo_aprendizaje.toLowerCase().includes("auditivo") ||
-          alumno.estilo_aprendizaje.toLowerCase().includes("kinestesico"))
+          alumno.estilo_aprendizaje.toLowerCase().includes("kinestesico")),
     ).length;
   };
 
@@ -118,6 +119,60 @@ const AllPage = () => {
     a.download = "respuestasFormulario.xlsx";
     a.click();
     URL.revokeObjectURL(url);
+  };
+
+  const downloadPDF = (alumno) => {
+    const doc = new jsPDF();
+
+    // Configuración del documento
+    doc.setFontSize(16);
+    doc.text("Reporte de Alumno", 20, 20);
+
+    // Datos del alumno
+    doc.setFontSize(12);
+    let yPosition = 40;
+
+    const datos = [
+      { label: "Nombre:", value: `${alumno.nombre} ${alumno.apellido}` },
+      { label: "CURP:", value: alumno.curp },
+      { label: "Grupo:", value: alumno.grupo },
+      { label: "Email:", value: alumno.email },
+      { label: "Generación:", value: alumno.generacion },
+    ];
+
+    datos.forEach((dato) => {
+      doc.setFont(undefined, "bold");
+      doc.text(`${dato.label}`, 20, yPosition);
+      doc.setFont(undefined, "normal");
+      doc.text(String(dato.value), 80, yPosition);
+      yPosition += 10;
+    });
+
+    // Sección de Estilos de Aprendizaje
+    yPosition += 10;
+    doc.setFont(undefined, "bold");
+    doc.setFontSize(13);
+    doc.text("Estilos de Aprendizaje", 20, yPosition);
+
+    yPosition += 10;
+    doc.setFontSize(12);
+    const estilos = [
+      { label: "Visual:", value: alumno.visual },
+      { label: "Auditivo:", value: alumno.auditivo },
+      { label: "Kinestésico:", value: alumno.kinestesico },
+      { label: "Estilo Principal:", value: alumno.estilo_aprendizaje },
+    ];
+
+    estilos.forEach((estilo) => {
+      doc.setFont(undefined, "bold");
+      doc.text(`${estilo.label}`, 20, yPosition);
+      doc.setFont(undefined, "normal");
+      doc.text(String(estilo.value), 80, yPosition);
+      yPosition += 10;
+    });
+
+    // Descargar el PDF
+    doc.save(`${alumno.nombre}_${alumno.apellido}.pdf`);
   };
 
   return (
